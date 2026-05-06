@@ -1,0 +1,5 @@
+
+node_modules/
+secrets/
+logs/
+spaced-api.tar.gz

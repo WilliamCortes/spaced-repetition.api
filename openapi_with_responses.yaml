@@ -1,0 +1,179 @@
+openapi: 3.1.0
+info:
+  title: Spaced Repetition API
+  description: API used by the GPT "English Dev Tutor" to manage spaced repetition of English phrases.
+  version: 1.0.0
+servers:
+  - url: https://150.136.164.200
+    description: Oracle Cloud Server
+
+paths:
+  /api/phrase:
+    post:
+      summary: Add a new English phrase
+      description: Creates a new phrase in the spaced repetition system.
+      operationId: addPhrase
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: The phrase to add
+      responses:
+        '201':
+          description: Phrase added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phrase'
+        '400':
+          description: Invalid input
+        '409':
+          description: Phrase already exists
+
+  /api/phrase/{id}:
+    get:
+      summary: Get a phrase by ID
+      description: Returns the phrase object with the given ID.
+      operationId: getPhraseById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response with phrase data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phrase'
+        '404':
+          description: Phrase not found
+
+  /api/review:
+    get:
+      summary: Get phrases to review
+      description: Lists phrases that are due for review based on spaced repetition logic.
+      operationId: getPhrasesToReview
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of phrases to review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewList'
+
+  /api/review/{id}:
+    post:
+      summary: Submit a review result
+      description: Updates spaced repetition data for a given phrase based on user input.
+      operationId: submitReview
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quality:
+                  type: integer
+                  minimum: 0
+                  maximum: 5
+                  description: User's score from 0 (forgotten) to 5 (perfect recall)
+      responses:
+        '200':
+          description: Review submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResult'
+        '400':
+          description: Invalid quality score
+        '404':
+          description: Phrase not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Phrase:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+    ReviewList:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              phrase_id:
+                type: integer
+              text:
+                type: string
+              next_review:
+                type: string
+    ReviewResult:
+      type: object
+      properties:
+        updated:
+          type: boolean
+        interval:
+          type: integer
+        repetitions:
+          type: integer
+        easiness_factor:
+          type: number
+        next_review:
+          type: string

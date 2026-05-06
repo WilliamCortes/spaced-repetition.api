@@ -1,0 +1,39 @@
+{
+  "name": "spaced-repetition.api",
+  "version": "1.0.0",
+  "description": "Spaced repetition of English phrases for developers",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node src/server.js",
+    "test": "test"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WilliamCortes/spaced-repetition.api.git"
+  },
+  "keywords": [
+    "English",
+    "dev"
+  ],
+  "author": "WilliamCortes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WilliamCortes/spaced-repetition.api/issues"
+  },
+  "homepage": "https://github.com/WilliamCortes/spaced-repetition.api#readme"
+}

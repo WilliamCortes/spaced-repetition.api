@@ -1,0 +1,5 @@
+node_modules
+.env
+*.db
+ssh-key-2025-04-10.key
+scripts
